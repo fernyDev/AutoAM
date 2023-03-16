@@ -13,7 +13,7 @@ from reportlab.pdfgen import canvas
 
 
 # Leer el archivo CSV
-df = pd.read_csv('ReporteOAGUS_20230312.csv')
+df = pd.read_csv('ReporteOAGUS_20230305.csv')
 
 # Crear un nuevo libro de trabajo de Excel
 wb = Workbook()
@@ -66,6 +66,12 @@ for cell in ws[1]:
     cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
     
 
+# cambiar el formato de color de los renglones 
+def apply_color(idx):
+    # definir los colores para los renglones
+    color = 'F2F2F2' if idx % 2 == 0 else 'FFFFFF'
+    return PatternFill(start_color=color, end_color=color, fill_type='solid')
+
 # Escribir los datos                
 for row_num, row_data in enumerate(df.values, 2):
     for col_num, cell_value in enumerate(row_data, 3):
@@ -73,7 +79,9 @@ for row_num, row_data in enumerate(df.values, 2):
         cell.font = cell_font
         cell.alignment = cell_alignment
 
-
+for row in ws.iter_rows(min_row=2, max_col=20):
+    for cell in row:
+        cell.fill = apply_color(cell)
 
 
 
@@ -108,18 +116,9 @@ for row_num, row_data in enumerate(df.values, 2):
   #      ws.column_dimensions[cell.column_letter].width = len(str(cell.value))
 
 
-# definir los colores para los renglones
-color1 = 'F2F2F2'
-color2 = 'FFFFFF'
 
-# cambiar el formato de color de los renglones 
-for idx, row in enumerate(ws.iter_rows(),4):
-    if idx % 2 == 0:
-        fill = PatternFill(start_color=color1, end_color=color1, fill_type='solid')
-    else:
-        fill = PatternFill(start_color=color2, end_color=color2, fill_type='solid')
-    for cell in row:
-        cell.fill = fill
+
+
 
 
 # Establecer color de relleno para los encabezados
@@ -158,26 +157,26 @@ for celda in columna:
 
 
 # Crea un objeto estilo para aplicar a la columna 'N'
-font = Font(color='FF0000')
-fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
+#font = Font(color='FF0000')
+#fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
 
 # Itera sobre cada fila de la columna 'M'
-for index, row in df.iterrows():
-    if row['M'] < 0:  # Si el valor en la columna 'M' es negativo
-        # Aplica el formato deseado a la celda en la columna 'N'
-        cell = f'{get_column_letter(df.columns.get_loc("N") + 1)}{index + 1}'
-        df.loc[index, 'N'] = f'({abs(row["N"])}%)'
-        df[cell].font = font
-        df[cell].fill = fill
+#for index, row in df.iterrows():
+ #   if row['M'] < 0:  # Si el valor en la columna 'M' es negativo
+  #      # Aplica el formato deseado a la celda en la columna 'N'
+ #  3     cell = f'{get_column_letter(df.columns.get_loc("N") + 1)}{index + 1}'
+#    df.loc[index, 'N'] = f'({abs(row["N"])}%)'
+  #      df[cell].font = font
+ #       df[cell].fill = fill
 
 # Guarda el archivo xlsx con los cambios realizados
-df.to_excel('tu_archivo_modificado.xlsx', index=False)
+#df.to_excel('tu_archivo_modificado.xlsx', index=False)
 
 # Indicar el número de columna que deseas eliminar
 num_columna = 3
 num_columna17 = 17
 num_columna18 = 16
-num_columna19 = 15
+num_columna19 = 12
 
 # Eliminar la columnas
 ws.delete_cols(num_columna)
