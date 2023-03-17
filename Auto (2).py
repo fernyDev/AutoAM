@@ -10,7 +10,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
-
+list_rows_total = []
 
 # Leer el archivo CSV
 df = pd.read_csv('ReporteOAGUS_20230305.csv')
@@ -20,7 +20,6 @@ wb = Workbook()
 
 # Seleccionar la hoja activa
 ws = wb.active
-
 
 # Establecer el ancho de las columnas
 ws.column_dimensions['A'].width = 3
@@ -46,7 +45,6 @@ ws.row_dimensions[1].height = 20
 # Establecer el estilo de fuente y alineación
 header_font = Font(name='Calibri', size=6, bold=True)
 header_alignment = Alignment(horizontal='center', vertical='center')
-cell_font = Font(name='Calibri', size=6)
 cell_alignment = Alignment(horizontal='left', vertical='center')
 
 
@@ -72,25 +70,18 @@ def apply_color(idx):
     color = 'F2F2F2' if idx % 2 == 0 else 'FFFFFF'
     return PatternFill(start_color=color, end_color=color, fill_type='solid')
 
+def apply_font_bold(value):
+    return Font(name='Calibri', size=6, bold= True) if value == 'TOTAL' else Font(name='Calibri', size=6)
+
+ca_actual = ''
+
 # Escribir los datos                
 for row_num, row_data in enumerate(df.values, 2):
     for col_num, cell_value in enumerate(row_data, 3):
         cell = ws.cell(row=row_num, column=col_num, value=cell_value)
-        cell.font = cell_font
+        cell.font = apply_font_bold(row_data[2])
         cell.alignment = cell_alignment
-
-for row in ws.iter_rows(min_row=2, max_col=20):
-    for cell in row:
-        cell.fill = apply_color(cell)
-
-
-
-
-
-
-
-
-
+        cell.fill = apply_color(row_num)
 
 
 # Cambiar el color de la celda A1 a rojo
@@ -115,33 +106,9 @@ for row in ws.iter_rows(min_row=2, max_col=20):
  #   for cell in row:
   #      ws.column_dimensions[cell.column_letter].width = len(str(cell.value))
 
-
-
-
-
-
-
-# Establecer color de relleno para los encabezados
-fill = PatternFill(start_color='BFBFBF', end_color='BFBFBF', fill_type='solid')
-
 # Justifica el texto de los encabezados
 for cell in ws[1]:
-    cell.fill = fill    #Agrego el color de relleno en el renglon 1
-
-
-# Buscar la celda que contiene la palabra "TOTAL"
-#for fila in ws.rows:
- #   for celda in fila:
-  #      if celda.value == 'TOTAL':
-            # Obtener la fila donde se encuentra la celda
-   #         fila_total = celda.row
-            # Poner el texto en negrita en toda la fila
-    #        for celda_en_fila in ws[f'A{fila_total}:Z{fila_total}']:
-     #           for celda_individual in celda_en_fila:
-      #              celda_individual.font = openpyxl.styles.Font(bold=True)
-
-
-
+    cell.fill = PatternFill(start_color='BFBFBF', end_color='BFBFBF', fill_type='solid')    #Agrego el color de relleno en el renglon 1
 
 
 #Convirtiendo a Decimales
