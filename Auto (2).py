@@ -64,6 +64,15 @@ for cell in ws[1]:
     cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
     
 
+def styling_cell(cell, row):
+    if row[0] != 3:
+        cell.font = apply_font_bold(row[2])
+        cell.fill = apply_color(row_num)
+    else:
+        cell.value = ''
+        cell.fill = PatternFill(start_color='FFFFFF', fill_type='solid')
+    cell.alignment = cell_alignment
+
 # cambiar el formato de color de los renglones 
 def apply_color(idx):
     # definir los colores para los renglones
@@ -73,15 +82,10 @@ def apply_color(idx):
 def apply_font_bold(value):
     return Font(name='Calibri', size=6, bold= True) if value == 'TOTAL' else Font(name='Calibri', size=6)
 
-ca_actual = ''
-
 # Escribir los datos                
 for row_num, row_data in enumerate(df.values, 2):
     for col_num, cell_value in enumerate(row_data, 3):
-        cell = ws.cell(row=row_num, column=col_num, value=cell_value)
-        cell.font = apply_font_bold(row_data[2])
-        cell.alignment = cell_alignment
-        cell.fill = apply_color(row_num)
+        styling_cell(ws.cell(row=row_num, column=col_num, value=cell_value), row_data)
 
 
 # Cambiar el color de la celda A1 a rojo
